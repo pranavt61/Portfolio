@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter,
+  Switch,
+  Route
+} from "react-router-dom";
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// pages
+import LandingPage from './pages/landing/';
+import SnakePage from './pages/snake/';
+import Connect4Page from './pages/connect4/';
+import TertisPage from './pages/tetris/';
+
+class App extends React.Component {
+  
+  render() {
+    return (
+      <BrowserRouter>
+        <div className="app">
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <Route path="/snake" component={SnakePage} />
+            <Route path="/connect4" component={Connect4Page} />
+            <Route path="/tetris" component={TertisPage} />
+          </Switch>
+        </div>
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;

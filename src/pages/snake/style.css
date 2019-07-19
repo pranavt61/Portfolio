@@ -1,0 +1,38 @@
+.grid {
+  display: flex;
+  flex-direction: row;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header {
+  text-align: center;
+  color: white;
+  font-size: 40px; 
+}
+
+.tile {
+  width: 20px;
+  height: 20px;
+
+  margin: 1px;
+}
+
+.tile-w {
+  background-color: #FF0000;
+}
+
+.tile-e {
+  background-color: #0000FF;
+}
+
+.tile-s {
+  background-color: #FFFF00;
+}
+
+.tile-f {
+  background-color: #FF00FF;
+}
