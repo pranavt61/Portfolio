@@ -2,6 +2,8 @@ import React from 'react';
 
 import Grid from './grid';
 
+import blockTypes from './blockTypes';
+
 class Tetris extends React.Component {
   constructor(props) {
     super(props);
@@ -18,37 +20,7 @@ class Tetris extends React.Component {
       // tetris state
       current_block: -1,
       current_block_position: [5,0],   // [x, y]
-
-      block_types: [
-        {
-          id: 1,
-          shape: [[1,1,1,1]]
-        },
-        {
-          id: 2,
-          shape: [[0,0,1],[1,1,1]]
-        },
-        {
-          id: 3,
-          shape: [[1,0,0],[1,1,1]]
-        },
-        {
-          id: 4,
-          shape: [[1,1],[1,1]]
-        },
-        {
-          id: 5,
-          shape: [[1,1,0],[0,1,1]]
-        },
-        {
-          id: 6,
-          shape: [[0,1],[1,1],[0,1]]
-        },
-        {
-          id: 7,
-          shape: [[0,1,1],[1,1,0]]
-        }
-      ]
+      current_block_rotation: 0
     };
   }
 
@@ -115,9 +87,9 @@ class Tetris extends React.Component {
   }
 
   initKeyListeners = () => {
-    const onKeyUp = this.onKeyUp;
+    const onKeyDown = this.onKeyDown;
 
-    window.onkeyup = onKeyUp;
+    window.onkeydown = onKeyDown;
   };
 
   initGameLoop = () => {
@@ -127,16 +99,19 @@ class Tetris extends React.Component {
     setInterval(updateGameLoop, game_speed);
   };
 
-  onKeyUp = (e) => {
+  onKeyDown = (e) => {
     const key = e.keyCode ? e.keyCode : e.which;
 
     let current_block_position = this.state.current_block_position;
     let current_block = this.state.current_block;
-    let block_types = this.state.block_types;
+    let current_block_rotation = this.state.current_block_rotation;
+
+    const block_types = blockTypes;
     let grid_data = this.state.grid_data;
 
     let dir_x = 0;
     let dir_y = 0;
+    let rotate = 0;
 
     if (key === 39) {
       // right arrow
@@ -147,10 +122,16 @@ class Tetris extends React.Component {
     } else if (key === 40) {
       // down arrow
       dir_y = 1;
+    } else if (key === 38) {
+      // up key
+      rotate = (block_types[current_block].shape.length === current_block_rotation + rotate + 1) ?
+        (-1 * current_block_rotation) : 1;
     }
 
-    if (dir_x !== 0 || dir_y !== 0) {
-      const block_shape = block_types[current_block].shape;
+    if (rotate !== 0
+      || dir_x !== 0
+      || dir_y !== 0) {
+      let block_shape = block_types[current_block].shape[current_block_rotation];
       const block_id = block_types[current_block].id;
 
       let block_pos_x = current_block_position[0];
@@ -169,6 +150,10 @@ class Tetris extends React.Component {
       block_pos_x += dir_x;
       block_pos_y += dir_y;
 
+      // rotate
+      current_block_rotation += rotate;
+      block_shape = block_types[current_block].shape[current_block_rotation];
+
       //*** Collision Detection ***//
       let collision = false;
       for (let x = 0; x < block_shape.length; x ++) {
@@ -185,6 +170,10 @@ class Tetris extends React.Component {
             // Collision
             block_pos_x -= dir_x;
             block_pos_y -= dir_y;
+
+            // rotation failed
+            current_block_rotation -= rotate;
+            block_shape = block_types[current_block].shape[current_block_rotation];
 
             collision = true;
             break;
@@ -209,7 +198,8 @@ class Tetris extends React.Component {
 
       this.setState({
         grid_data: grid_data,
-        current_block_position: current_block_position
+        current_block_position: current_block_position,
+        current_block_rotation: current_block_rotation
       });
     }
   };
@@ -218,13 +208,14 @@ class Tetris extends React.Component {
     let grid_data = this.state.grid_data;
     let current_block = this.state.current_block;
     let current_block_position = this.state.current_block_position;
+    let current_block_rotation = this.state.current_block_rotation;
 
-    const block_types = this.state.block_types;
+    const block_types = blockTypes;
 
     // move block
     // NOTE: must come before spawn block
     if (current_block !== -1) {
-      const block_shape = block_types[current_block].shape;
+      const block_shape = block_types[current_block].shape[current_block_rotation];
       const block_id = block_types[current_block].id;
 
       let block_pos_x = current_block_position[0];
@@ -287,6 +278,34 @@ class Tetris extends React.Component {
 
         current_block = -1;
         current_block_position = [block_pos_x, block_pos_y];
+
+        // check rows completed
+        let num_rows_complete = 0;
+        for (let y = grid_data[0].length - 1; y >= 0; y --) {
+          // move row down
+          for (let x = 0; x < grid_data.length; x ++) {
+            grid_data[x][y + num_rows_complete] = grid_data[x][y];
+          }
+
+          let row_complete = true;
+          for (let x = 0; x < grid_data.length; x ++) {
+            if (grid_data[x][y] === 0) {
+              // empty tile in row
+              row_complete = false;
+            }
+          }
+
+          if (row_complete === true) {
+            current_block = -1;
+
+            num_rows_complete ++;
+
+            // clear
+            for (let x = 0; x < grid_data.length; x ++) {
+              grid_data[x][y] = 0;
+            }
+          }
+        }
       }
     }
 
@@ -296,13 +315,14 @@ class Tetris extends React.Component {
 
       // choose random block
       current_block = Math.floor(Math.random() * block_types.length)
+      current_block_rotation = Math.floor(Math.random() * block_types[current_block].shape.length);
 
       // get new position
       let block_pos_x = Math.floor(grid_data.length / 2) - 1;
       let block_pos_y = 0;
 
       // set block
-      const block_shape = block_types[current_block].shape;
+      const block_shape = block_types[current_block].shape[current_block_rotation];
       const block_id = block_types[current_block].id;
       for (let x = 0; x < block_shape.length; x ++) {
         for (let y = 0; y < block_shape[x].length; y ++) {
@@ -316,7 +336,8 @@ class Tetris extends React.Component {
     this.setState({
       grid_data: grid_data,
       current_block: current_block,
-      current_block_position: current_block_position
+      current_block_position: current_block_position,
+      current_block_rotation: current_block_rotation
     });
   };
 
