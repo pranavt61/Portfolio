@@ -56,7 +56,7 @@ class App extends React.Component {
               <Card.Img
                 className="selection-card-img"
                 variant="top"
-                src={require("./res/connect4.png")} />
+                src={require("./res/tetris.png")} />
               <Card.Body className="selection-card-body">
                 <Card.Title>Tetris</Card.Title>
                 <Button

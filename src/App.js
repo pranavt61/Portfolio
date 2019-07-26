@@ -12,6 +12,7 @@ import LandingPage from './pages/landing/';
 import SnakePage from './pages/snake/';
 import Connect4Page from './pages/connect4/';
 import TertisPage from './pages/tetris/';
+import MineSweeperPage from './pages/minesweeper/';
 
 class App extends React.Component {
   
@@ -24,6 +25,7 @@ class App extends React.Component {
             <Route path="/snake" component={SnakePage} />
             <Route path="/connect4" component={Connect4Page} />
             <Route path="/tetris" component={TertisPage} />
+            <Route path="/minesweeper" component={MineSweeperPage} />
           </Switch>
         </div>
       </BrowserRouter>

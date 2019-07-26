@@ -1,0 +1,11 @@
+Done:
+  Snake
+  Connect4
+  Tetris
+
+WIP:
+  Minesweeper
+
+TODO:
+  Maze
+
