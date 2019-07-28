@@ -13,6 +13,10 @@ class App extends React.Component {
   changePage = (path) => {
     this.props.history.push(path);
   };
+
+  redirectPage = (path) => {
+    window.location.href = path;
+  };
   
   render() {
     return (
@@ -24,60 +28,88 @@ class App extends React.Component {
         </div>
         <div className="portfolio">
           <div className="selection">
-            <Card className="selection-card">
+            <Card className="selection-card text-white bg-secondary">
               <Card.Img 
                 className="selection-card-img"
                 variant="top" 
                 src={require("./res/snake.png")} />
               <Card.Body>
                 <Card.Title>Snake</Card.Title>
-                <Button
-                  onClick={() => this.changePage('snake')}
-                  variant="primary">
-                  Play
-                </Button>
+                <div className="selection-card-buttons">
+                  <Button
+                    onClick={() => this.changePage('snake')}
+                    variant="success">
+                    Play
+                  </Button>
+                  <Button
+                    onClick={() => this.redirectPage('https://github.com/pranavt61/Portfolio/tree/master/src/pages/snake')}
+                    variant="secondary">
+                    Source
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
-            <Card className="selection-card">
+            <Card className="selection-card text-white bg-secondary">
               <Card.Img
                 className="selection-card-img"
                 variant="top"
                 src={require("./res/connect4.png")} />
               <Card.Body className="selection-card-body">
                 <Card.Title>Connect 4</Card.Title>
-                <Button
-                  onClick={() => this.changePage('connect4')}
-                  variant="primary">
-                  Play
-                </Button>
+                <div className="selection-card-buttons">
+                  <Button
+                    onClick={() => this.changePage('connect4')}
+                    variant="success">
+                    Play
+                  </Button>
+                  <Button
+                    onClick={() => this.redirectPage('https://github.com/pranavt61/Portfolio/tree/master/src/pages/connect4')}
+                    variant="secondary">
+                    Source
+                  </Button>
+                </div>
               </Card.Body> 
             </Card>
-            <Card className="selection-card">
+            <Card className="selection-card text-white bg-secondary">
               <Card.Img
                 className="selection-card-img"
                 variant="top"
                 src={require("./res/tetris.png")} />
               <Card.Body className="selection-card-body">
                 <Card.Title>Tetris</Card.Title>
-                <Button
-                  onClick={() => this.changePage('tetris')}
-                  variant="primary">
-                  Play
-                </Button>
+                <div className="selection-card-buttons">
+                  <Button
+                    onClick={() => this.changePage('tetris')}
+                    variant="success">
+                    Play
+                  </Button>
+                  <Button
+                    onClick={() => this.redirectPage('https://github.com/pranavt61/Portfolio/tree/master/src/pages/tetris')}
+                    variant="secondary">
+                    Source
+                  </Button>
+                </div>
               </Card.Body> 
             </Card>
-            <Card className="selection-card">
+            <Card className="selection-card text-white bg-secondary">
               <Card.Img
                 className="selection-card-img"
                 variant="top"
                 src={require("./res/minesweeper.png")} />
               <Card.Body className="selection-card-body">
                 <Card.Title>MineSweeper</Card.Title>
-                <Button
-                  onClick={() => this.changePage('minesweeper')}
-                  variant="primary">
-                  Play
-                </Button>
+                <div className="selection-card-buttons">
+                  <Button
+                    onClick={() => this.changePage('minesweeper')}
+                    variant="success">
+                    Play
+                  </Button>
+                  <Button
+                    onClick={() => this.redirectPage('https://github.com/pranavt61/Portfolio/tree/master/src/pages/minesweeper')}
+                    variant="secondary">
+                    Source
+                  </Button>
+                </div>
               </Card.Body> 
             </Card>
           </div>
