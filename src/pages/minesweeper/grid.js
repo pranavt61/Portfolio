@@ -76,7 +76,9 @@ class Tile extends React.Component {
   render() {
     const tile_type = this.state.type;
     const tile_size = this.state.size;
-    const onTileClick = this.props.onTileClick;
+
+    const onTileLeftClick = this.props.onTileLeftClick;
+    const onTileRightClick = this.props.onTileRightClick;
     const tile_x = this.props.tile_x;
     const tile_y = this.props.tile_y;
 
@@ -89,7 +91,8 @@ class Tile extends React.Component {
 
     return(
       <img 
-        onClick={() => onTileClick(tile_x, tile_y, tile_type)}
+        onClick={(e) => onTileLeftClick(e, tile_x, tile_y, tile_type)}
+        onContextMenu={(e) => onTileRightClick(e, tile_x, tile_y, tile_type)}
         src={tile_legend[tile_type[0]]}
         style={tile_style} />
     );
@@ -109,7 +112,8 @@ class Grid extends React.Component {
   componentDidMount() {
     let grid_data = this.props.grid_data;   // grid data [x][y]
     let tile_size = this.props.tile_size;   // size of each tile
-    let onTileClick = this.props.onTileClick;
+    let onTileLeftClick = this.props.onTileLeftClick;
+    let onTileRightClick = this.props.onTileRightClick;
 
     // constuct grid
     let grid = [];
@@ -127,7 +131,8 @@ class Grid extends React.Component {
             tile_size={tile_size}
             tile_x={x}
             tile_y={y}
-            onTileClick={onTileClick}
+            onTileLeftClick={onTileLeftClick}
+            onTileRightClick={onTileRightClick}
             ref={(tile) => {this.tile_refs[x + '-' + y] = tile}}
           />
         );

@@ -13,6 +13,7 @@ class MineSweeper extends React.Component {
       grid_size: 20,
 
       num_bombs: 50,
+      num_flags: 0,
 
       // 0 -> running
       // 1 -> lost
@@ -76,6 +77,8 @@ class MineSweeper extends React.Component {
     const game_state = this.state.game_state;
     const grid_size = this.state.grid_size;
     let grid_data = this.state.grid_data;
+    const num_flags = this.state.num_flags;
+    const num_bombs = this.state.num_bombs;
 
     if (game_state !== old_game_state) {
       if (game_state === 1) {
@@ -88,14 +91,49 @@ class MineSweeper extends React.Component {
           }
         }
 
+        alert('Better luck next time!');
+
         this.setState({
           grid_data: grid_data
+        });
+      } else if (game_state === 2) {
+        // won
+        alert('You Win!');
+      }
+    }
+
+    if (game_state !== 0) {
+      // stop running
+      return;
+    }
+
+    if (num_flags === num_bombs) {
+      let won = true;
+      for (let x = 0; x < grid_size; x ++) {
+        for (let y = 0; y < grid_size; y ++) {
+          if (grid_data[x][y][0] === 'h') {
+            won = false;
+            break;
+          }
+        }
+
+        if (won === false) {
+          break;
+        }
+      }
+
+      if (won === true) {
+        // all bombs flagged
+        this.setState({
+          game_state: 2
         });
       }
     }
   }
 
-  onTileClick = (x, y, type) => {
+  onTileLeftClick = (event, x, y, type) => {
+    event.preventDefault();
+
     if (this.state.game_state !== 0) {
       // not running
       return;
@@ -134,8 +172,6 @@ class MineSweeper extends React.Component {
           const pos_x = x + offset_x;
           const pos_y = y + offset_y;
 
-          console.log(pos_x + '-' + pos_y);
-
           if (pos_x >= 0
             && pos_x < grid_size
             && pos_y >= 0
@@ -153,10 +189,44 @@ class MineSweeper extends React.Component {
       grid_data: grid_data
     });
   };
+
+  onTileRightClick = (event, x, y, type) => {
+    event.preventDefault();
+
+    if (this.state.game_state !== 0) {
+      // game over
+      return;
+    }
+
+    let grid_data = this.state.grid_data;
+    let num_flags = this.state.num_flags;
+    const num_bombs = this.state.num_bombs;
+
+    if (num_flags === num_bombs) {
+      // no more flags
+      return;
+    }
+
+    if (type[0] === 'h') {
+      // flag
+      grid_data[x][y] = 'f' + grid_data[x][y][1];
+      num_flags ++;
+    } else if (type[0] === 'f') {
+      // unflag
+      grid_data[x][y] = 'h' + grid_data[x][y][1];
+      num_flags --;
+    }
+
+    this.setState({
+      grid_data: grid_data,
+      num_flags: num_flags
+    });
+  };
   
   render() {
     const grid_data = this.state.grid_data;
-    const onTileClick = this.onTileClick;
+    const onTileLeftClick = this.onTileLeftClick;
+    const onTileRightClick = this.onTileRightClick;
 
     if (grid_data === null) {
       // grid empty
@@ -168,7 +238,8 @@ class MineSweeper extends React.Component {
         <Grid
           grid_data={grid_data}
           tile_size={30}
-          onTileClick={onTileClick}
+          onTileLeftClick={onTileLeftClick}
+          onTileRightClick={onTileRightClick}
         />
       </div>
     );
