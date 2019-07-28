@@ -66,6 +66,20 @@ class App extends React.Component {
                 </Button>
               </Card.Body> 
             </Card>
+            <Card className="selection-card">
+              <Card.Img
+                className="selection-card-img"
+                variant="top"
+                src={require("./res/minesweeper.png")} />
+              <Card.Body className="selection-card-body">
+                <Card.Title>MineSweeper</Card.Title>
+                <Button
+                  onClick={() => this.changePage('minesweeper')}
+                  variant="primary">
+                  Play
+                </Button>
+              </Card.Body> 
+            </Card>
           </div>
         </div>
       </div>
